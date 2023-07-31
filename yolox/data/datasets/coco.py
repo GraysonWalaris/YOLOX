@@ -143,7 +143,14 @@ class COCODataset(CacheDataset):
     def load_image(self, index):
         file_name = self.annotations[index][3]
 
-        img_file = os.path.join(self.data_dir, self.name, file_name)
+        # hacky way to allow full paths to prevent having to move images into
+        # a different folders
+        if '/home/' not in file_name: 
+            img_file = os.path.join(os.environ.get('WALARIS_MAIN_DATA_PATH'), 
+                                    'Images',
+                                    file_name)
+        else:
+            img_file = file_name
 
         img = cv2.imread(img_file)
         assert img is not None, f"file named {img_file} not found"
